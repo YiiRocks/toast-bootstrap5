@@ -33,7 +33,7 @@ composer require yiirocks/toast-bootstrap5
 Optionally, add [Bootstrap Icons](https://icons.getbootstrap.com/) per message type:
 
 ```bash
-composer require yiirocks/svg-inline yiirocks/svg-inline-bootstrap
+composer require yiirocks/svg-inline-bootstrap
 ```
 
 ## Usage

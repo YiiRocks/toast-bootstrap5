@@ -46,7 +46,7 @@
         "yiisoft/di": "*"
     },
     "suggest": {
-        "yiirocks/svg-inline": "Renders an icon in each toast, resolved via yiirocks/svg-inline-bootstrap or another registered icon set."
+        "yiirocks/svg-inline-bootstrap": "Renders an icon in each toast, resolved via yiirocks/svg-inline-bootstrap or another registered icon set."
     },
     "autoload": {
         "psr-4": {
