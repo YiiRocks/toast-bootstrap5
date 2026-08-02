@@ -1,0 +1,104 @@
+{
+    "name": "yiirocks/toast-bootstrap5",
+    "description": "Bootstrap 5 toast notifications backed by Yii3 session flash messages",
+    "type": "library",
+    "keywords": [
+        "yii",
+        "yii3",
+        "extension",
+        "toast",
+        "flash",
+        "notification",
+        "bootstrap",
+        "bootstrap5"
+    ],
+    "homepage": "https://www.yii.rocks/toast-bootstrap5/",
+    "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Mr.42",
+            "homepage": "https://mr42.me/",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/YiiRocks/toast-bootstrap5/issues",
+        "source": "https://github.com/YiiRocks/toast-bootstrap5/tree/main"
+    },
+    "require": {
+        "php": ">=8.3",
+        "psr/container": "^1.0 || ^2.0",
+        "yiisoft/html": "^3.9 || ^4.0",
+        "yiisoft/session": "^3.0",
+        "yiisoft/yii-view-renderer": "^7.3"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "@stable",
+        "httpsoft/http-message": "@stable",
+        "infection/infection": "^0.34.0",
+        "phpunit/phpunit": "@stable",
+        "vimeo/psalm": "^6.0",
+        "yiirocks/svg-inline": "^1.0",
+        "yiirocks/svg-inline-bootstrap": "^1.0",
+        "yiisoft/config": "^1.6",
+        "yiisoft/di": "*"
+    },
+    "suggest": {
+        "yiirocks/svg-inline": "Renders an icon in each toast, resolved via yiirocks/svg-inline-bootstrap or another registered icon set."
+    },
+    "autoload": {
+        "psr-4": {
+            "YiiRocks\\ToastBootstrap5\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "YiiRocks\\ToastBootstrap5\\tests\\": "tests"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "scripts": {
+        "php-cs-fixer": "@php vendor/bin/php-cs-fixer fix",
+        "phpunit": "@php vendor/bin/phpunit",
+        "psalm": "@php vendor/bin/psalm",
+        "infection": "@php vendor/bin/infection --configuration=infection.json --min-msi=100 --min-covered-msi=100"
+    },
+    "scripts-descriptions": {
+        "php-cs-fixer": "Cleans to code with PHP Coding Standards Fixer.",
+        "phpunit": "PHPUnit - programmer-oriented testing framework.",
+        "psalm": "Psalm - static analysis tool for finding errors in PHP applications.",
+        "infection": "Infection - PHP Mutation Testing Framework."
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        },
+        "config-plugin-options": {
+            "source-directory": "config"
+        },
+        "config-plugin": {
+            "params": "params.php",
+            "di": "di.php"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "infection/extension-installer": true,
+            "yiisoft/config": true
+        }
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/YiiRocks"
+        }
+    ]
+}
