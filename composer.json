@@ -85,7 +85,7 @@
         },
         "config-plugin": {
             "params": "params.php",
-            "di": "di.php"
+            "di-web": "di-web.php"
         }
     },
     "config": {

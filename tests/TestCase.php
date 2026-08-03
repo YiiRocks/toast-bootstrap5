@@ -33,6 +33,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $containerConfig = ContainerConfig::create()
             ->withDefinitions([
                 ...$config->get('di'),
+                ...$config->get('di-web'),
                 // Session binding an app would normally get from yiisoft/session's own di-web
                 // config group - wired here directly so tests don't depend on merging that group.
                 SessionInterface::class => Session::class,
