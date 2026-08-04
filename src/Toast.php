@@ -66,7 +66,7 @@ final class Toast implements NoEncodeStringableInterface, ToastInterface
             ->attribute('style', 'z-index: 1100')
             ->content(...$toasts);
 
-        return $container->render() . $this->renderInitScript();
+        return $container->render() . '<script>document.querySelectorAll(".toast-container .toast").forEach(function (el) { bootstrap.Toast.getOrCreateInstance(el).show(); });</script>';
     }
 
     /**
@@ -122,11 +122,6 @@ final class Toast implements NoEncodeStringableInterface, ToastInterface
         $value = $this->flash->get(FlashToast::key($type));
 
         return is_array($value) ? array_map(strval(...), $value) : [];
-    }
-
-    private function renderInitScript(): string
-    {
-        return '<script>document.querySelectorAll(".toast-container .toast").forEach(function (el) { bootstrap.Toast.getOrCreateInstance(el).show(); });</script>';
     }
 
     private function renderToast(ToastType $type, string $message): Div
