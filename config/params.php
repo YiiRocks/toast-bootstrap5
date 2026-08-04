@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-use YiiRocks\ToastBootstrap5\ToastInjections;
-use YiiRocks\ToastBootstrap5\ToastInterface;
 use YiiRocks\ToastBootstrap5\ToastType;
-use Yiisoft\Definitions\Reference;
 
 /** @var array $params */
 
@@ -28,17 +25,5 @@ return [
         ],
         // Space-separated Bootstrap position utility classes for the toast container.
         'position' => 'top-0 end-0',
-    ],
-
-    'yiisoft/view' => [
-        'parameters' => [
-            'toast' => Reference::to(ToastInterface::class),
-        ],
-    ],
-
-    'yiisoft/yii-view-renderer' => [
-        'injections' => [
-            Reference::to(ToastInjections::class),
-        ],
     ],
 ];
