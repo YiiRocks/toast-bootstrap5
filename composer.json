@@ -40,7 +40,6 @@
         "infection/infection": "^0.34.0",
         "phpunit/phpunit": "@stable",
         "vimeo/psalm": "^6.0",
-        "yiirocks/svg-inline": "^1.0",
         "yiirocks/svg-inline-bootstrap": "^1.0",
         "yiisoft/config": "^1.6",
         "yiisoft/di": "*"

@@ -106,11 +106,11 @@ final class Toast implements NoEncodeStringableInterface, ToastInterface
         /** @var SvgInlineInterface $svg */
         $svg = $this->container->get(SvgInlineInterface::class);
 
-        // SvgInlineInterface doesn't declare Stringable/NoEncodeStringableInterface itself, only
-        // its concrete implementations do - render up front and re-wrap so content() below never
-        // HTML-encodes the icon's already-safe SVG markup.
-        /** @psalm-suppress InvalidCast */
-        return NoEncode::string((string) $svg->bootstrap($name));
+        // As of svg-inline 2.0 SvgInlineInterface extends NoEncodeStringableInterface, so the icon
+        // flows into content() unencoded as-is. Suppressed: bootstrap() is resolved via __call(),
+        // so psalm sees it as an undefined method returning mixed.
+        /** @psalm-suppress UndefinedMagicMethod, MixedReturnStatement */
+        return $svg->bootstrap($name);
     }
 
     /**
