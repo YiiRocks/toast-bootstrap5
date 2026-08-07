@@ -15,6 +15,7 @@ use Yiisoft\Session\Flash\Flash;
 use Yiisoft\Session\Flash\FlashInterface;
 use Yiisoft\Session\Session;
 use Yiisoft\Session\SessionInterface;
+use Yiisoft\View\WebView;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -22,9 +23,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected FlashInterface $flash;
 
+    protected WebView $view;
+
     protected function setUp(): void
     {
         parent::setUp();
+        $this->view = new WebView(sys_get_temp_dir());
         $config = new Config(
             new ConfigPaths(dirname(__DIR__), 'config'),
             '/',
@@ -55,5 +59,20 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $session->destroy();
         }
         parent::tearDown();
+    }
+
+    /**
+     * Assembles a full page from the view so JS registered via {@see WebView::registerJs()} is
+     * emitted at end of body (POSITION_READY wrapped in `DOMContentLoaded`). Clears the view state.
+     */
+    protected function renderPage(WebView $view): string
+    {
+        ob_start();
+        $view->beginPage();
+        $view->beginBody();
+        $view->endBody();
+        $view->endPage();
+
+        return (string) ob_get_clean();
     }
 }

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace YiiRocks\ToastBootstrap5;
 
+use Yiisoft\View\WebView;
+
 interface ToastInterface
 {
     /**
-     * Renders all pending toast flash messages as a Bootstrap 5 `.toast-container`, or an empty
-     * string if there are none. Also implements `__toString()`, so `<?= $toast ?>` in a layout works
-     * without an explicit call.
+     * Renders pending toast flash messages as a Bootstrap 5 `.toast-container` (empty string if
+     * none) and registers the show-script on `$view`. A layout calls `<?= $toast->render($this) ?>`.
      */
-    public function render(): string;
+    public function render(WebView $view): string;
 }

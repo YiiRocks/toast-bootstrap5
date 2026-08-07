@@ -14,6 +14,7 @@ use Yiisoft\Html\NoEncodeStringableInterface;
 use Yiisoft\Html\Tag\Div;
 
 use Yiisoft\Session\Flash\FlashInterface;
+use Yiisoft\View\WebView;
 
 use function array_map;
 use function explode;
@@ -21,14 +22,10 @@ use function is_array;
 
 /**
  * Renders pending {@see FlashToastInterface} messages as Bootstrap 5 toasts. Bound as `$toast` in
- * views/layouts (see {@see ToastInjections}), so `<?= $toast ?>` is all a consumer needs to write.
- *
- * Auto-dismiss/positioning is left entirely to Bootstrap's own `data-bs-*` toast API - the only
- * script emitted here calls `bootstrap.Toast.getOrCreateInstance(el).show()` per toast, since
- * Bootstrap does not auto-initialize toasts from markup alone the way it does dropdowns/collapses.
- * That requires Bootstrap's JS bundle to already be loaded on the page before this renders.
+ * views (see {@see ToastInjections}); a layout writes `<?= $toast->render($this) ?>`. Dismiss and
+ * autohide are Bootstrap's own `data-bs-*` API; the show-script is registered via {@see render()}.
  */
-final class Toast implements NoEncodeStringableInterface, ToastInterface
+final class Toast implements ToastInterface
 {
     /** @var array<string, int|null> */
     private array $delays = [];
@@ -43,13 +40,8 @@ final class Toast implements NoEncodeStringableInterface, ToastInterface
         private ?ContainerInterface $container = null,
     ) {}
 
-    public function __toString(): string
-    {
-        return $this->render();
-    }
-
     #[Override]
-    public function render(): string
+    public function render(WebView $view): string
     {
         $toasts = [];
         foreach (ToastType::cases() as $type) {
@@ -62,12 +54,20 @@ final class Toast implements NoEncodeStringableInterface, ToastInterface
             return '';
         }
 
-        $container = Html::div()
+        // Bootstrap doesn't auto-init toasts from markup. POSITION_READY emits this at end of body
+        // wrapped in DOMContentLoaded, so it runs after Bootstrap's bundle whatever the load order.
+        $view->registerJs(
+            'document.querySelectorAll(".toast-container .toast")'
+                . '.forEach(function (el) { bootstrap.Toast.getOrCreateInstance(el).show(); });',
+            WebView::POSITION_READY,
+            self::class,
+        );
+
+        return Html::div()
             ->class('toast-container', 'position-fixed', 'p-3', ...explode(' ', $this->position))
             ->attribute('style', 'z-index: 1100')
-            ->content(...$toasts);
-
-        return $container->render() . '<script>document.querySelectorAll(".toast-container .toast").forEach(function (el) { bootstrap.Toast.getOrCreateInstance(el).show(); });</script>';
+            ->content(...$toasts)
+            ->render();
     }
 
     /**
@@ -101,9 +101,8 @@ final class Toast implements NoEncodeStringableInterface, ToastInterface
     {
         $name = $this->icons[$type->value] ?? null;
 
-        // Icons are optional. Guard on SvgInlineBootstrapInterface, not the base SvgInlineInterface:
-        // since svg-inline 2.0 `$svg->bootstrap()` resolves the `bootstrap` icon set via __call() and
-        // throws if yiirocks/svg-inline-bootstrap isn't installed - and that interface is bound iff it is.
+        // Guard on the bootstrap icon set, not base svg-inline: since 2.0 $svg->bootstrap() throws
+        // if svg-inline-bootstrap isn't installed, and its interface is bound iff it is.
         if ($name === null || $this->container === null || !$this->container->has(SvgInlineBootstrapInterface::class)) {
             return NoEncode::string('');
         }
@@ -111,8 +110,8 @@ final class Toast implements NoEncodeStringableInterface, ToastInterface
         /** @var SvgInlineInterface $svg */
         $svg = $this->container->get(SvgInlineInterface::class);
 
-        // SvgInlineInterface extends NoEncodeStringableInterface (2.0), so the icon flows into
-        // content() unencoded. Suppressed: bootstrap() via __call() reads as undefined→mixed to psalm.
+        // bootstrap() (resolved via __call, reads as undefined→mixed to psalm) returns a
+        // NoEncodeStringableInterface as of svg-inline 2.0, so it flows into content() unencoded.
         /** @psalm-suppress UndefinedMagicMethod, MixedReturnStatement */
         return $svg->bootstrap($name);
     }

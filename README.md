@@ -2,7 +2,7 @@
 
 Bootstrap 5 toast notifications for [Yii framework 3.0](http://www.yiiframework.com/), backed by
 [`yiisoft/session`](https://github.com/yiisoft/session) flash messages. Queue a message from a
-controller, echo `$toast` in your layout, done - no manual partials, no custom JS.
+controller, render `$toast` in your layout, done - no manual partials, no custom JS.
 
 [![Packagist Version](https://img.shields.io/packagist/v/yiirocks/toast-bootstrap5.svg)](https://packagist.org/packages/yiirocks/toast-bootstrap5)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/yiirocks/toast-bootstrap5.svg)](https://php.net/)
@@ -52,10 +52,11 @@ public function actionSave(): ResponseInterface
 }
 ```
 
-Then echo `$toast` once in your layout - the default configuration injects it into every view:
+Then render `$toast` once in your layout, passing the current view (`$this`) - the default
+configuration injects `$toast` into every view:
 
 ```php
-<?= $toast ?>
+<?= $toast->render($this) ?>
 ```
 
 Nothing renders until a message is pending. Four types are available (`success`, `error`,

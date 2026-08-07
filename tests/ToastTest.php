@@ -18,7 +18,7 @@ final class ToastTest extends TestCase
     {
         $this->container->get(FlashToastInterface::class)->error('Failed.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertStringContainsString('data-bs-autohide="false"', $html);
         self::assertStringNotContainsString('data-bs-delay', $html);
@@ -28,7 +28,7 @@ final class ToastTest extends TestCase
     {
         $this->container->get(FlashToastInterface::class)->success('Saved.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertStringContainsString('data-bs-autohide="true"', $html);
         self::assertStringContainsString('data-bs-delay="4000"', $html);
@@ -38,7 +38,7 @@ final class ToastTest extends TestCase
     {
         $this->container->get(FlashToastInterface::class)->error('Failed.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertStringContainsString('text-bg-danger', $html);
     }
@@ -50,19 +50,50 @@ final class ToastTest extends TestCase
         // `string` under strict_types, so this would fatal without the defensive cast.
         $this->flash->add('toast.success', 42);
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertStringContainsString('42', $html);
     }
 
-    public function testInitScriptIsAppendedAfterTheToastContainerMarkup(): void
+    public function testRenderReturnsOnlyTheContainerMarkupWithoutAnInlineScript(): void
     {
         $this->container->get(FlashToastInterface::class)->success('Saved.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
+        // The show-script is registered on the view, not concatenated into the returned markup.
         self::assertStringStartsWith('<div class="toast-container', $html);
-        self::assertStringEndsWith('</script>', $html);
+        self::assertStringEndsWith('</div>', $html);
+        self::assertStringNotContainsString('<script', $html);
+    }
+
+    public function testRegistersShowScriptOnTheViewWrappedInDomContentLoaded(): void
+    {
+        // registerJs(POSITION_READY) makes yiisoft/view emit the script at end of body, wrapped in
+        // DOMContentLoaded, so it runs after Bootstrap's own bundle regardless of load order.
+        $this->container->get(FlashToastInterface::class)->success('Saved.');
+
+        $this->container->get(ToastInterface::class)->render($this->view);
+        $page = $this->renderPage($this->view);
+
+        self::assertStringContainsString("document.addEventListener('DOMContentLoaded'", $page);
+        self::assertStringContainsString(
+            'document.querySelectorAll(".toast-container .toast").forEach(function (el)'
+                . ' { bootstrap.Toast.getOrCreateInstance(el).show(); });',
+            $page,
+        );
+    }
+
+    public function testRegistersTheShowScriptOnlyWhenThereAreToasts(): void
+    {
+        $toast = $this->container->get(ToastInterface::class);
+
+        self::assertSame('', $toast->render($this->view));
+        self::assertStringNotContainsString('getOrCreateInstance', $this->renderPage($this->view));
+
+        $this->container->get(FlashToastInterface::class)->info('FYI.');
+        $toast->render($this->view);
+        self::assertStringContainsString('getOrCreateInstance', $this->renderPage($this->view));
     }
 
     public function testMessagesFromDifferentTypesAllRender(): void
@@ -72,7 +103,7 @@ final class ToastTest extends TestCase
             $flashToast->add($type, $type->value . ' message');
         }
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         foreach (ToastType::cases() as $type) {
             self::assertStringContainsString($type->value . ' message', $html);
@@ -85,7 +116,7 @@ final class ToastTest extends TestCase
         $flashToast->warning('First.');
         $flashToast->warning('Second.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertSame(2, substr_count($html, 'toast align-items-center'));
         self::assertStringContainsString('First.', $html);
@@ -96,26 +127,17 @@ final class ToastTest extends TestCase
     {
         $this->container->get(FlashToastInterface::class)->info('FYI.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertStringContainsString('role="status"', $html);
         self::assertStringContainsString('aria-live="polite"', $html);
-    }
-
-    public function testRenderIncludesInitScriptOnlyWhenThereAreToasts(): void
-    {
-        $toast = $this->container->get(ToastInterface::class);
-        self::assertStringNotContainsString('<script>', $toast->render());
-
-        $this->container->get(FlashToastInterface::class)->info('FYI.');
-        self::assertStringContainsString('bootstrap.Toast.getOrCreateInstance', $toast->render());
     }
 
     public function testRendersAMessageWithItsBootstrapColorAndEscapesContent(): void
     {
         $this->container->get(FlashToastInterface::class)->success('<b>Saved</b>.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertStringContainsString('toast-container', $html);
         self::assertStringContainsString('text-bg-success', $html);
@@ -127,7 +149,7 @@ final class ToastTest extends TestCase
     {
         $this->container->get(FlashToastInterface::class)->success('Saved.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertStringContainsString('<svg', $html);
     }
@@ -136,8 +158,7 @@ final class ToastTest extends TestCase
     {
         $toast = $this->container->get(ToastInterface::class);
 
-        self::assertSame('', $toast->render());
-        self::assertSame('', (string) $toast);
+        self::assertSame('', $toast->render($this->view));
     }
 
     public function testRendersWithoutAnIconWhenContainerLacksSvgInline(): void
@@ -148,7 +169,7 @@ final class ToastTest extends TestCase
         $toast = new Toast($this->flash, $container);
         $toast->setIcons([ToastType::Success->value => 'check-circle-fill']);
 
-        self::assertStringNotContainsString('<svg', $toast->render());
+        self::assertStringNotContainsString('<svg', $toast->render($this->view));
     }
 
     public function testRendersWithoutAnIconWhenSvgInlineBootstrapIsNotInstalled(): void
@@ -163,7 +184,7 @@ final class ToastTest extends TestCase
         $toast = new Toast($this->flash, $container);
         $toast->setIcons([ToastType::Success->value => 'check-circle-fill']);
 
-        $html = $toast->render();
+        $html = $toast->render($this->view);
 
         self::assertStringNotContainsString('<svg', $html);
         self::assertStringContainsString('Saved.', $html);
@@ -174,7 +195,7 @@ final class ToastTest extends TestCase
         $this->flash->add('toast.success', 'Saved.');
         $toast = new Toast($this->flash);
 
-        $html = $toast->render();
+        $html = $toast->render($this->view);
 
         self::assertStringNotContainsString('<svg', $html);
         self::assertStringContainsString('Saved.', $html);
@@ -186,14 +207,14 @@ final class ToastTest extends TestCase
         $toast->setIcons([]);
         $this->container->get(FlashToastInterface::class)->success('Saved.');
 
-        self::assertStringNotContainsString('<svg', $toast->render());
+        self::assertStringNotContainsString('<svg', $toast->render($this->view));
     }
 
     public function testUrgentTypeUsesAlertRoleAndAssertiveLiveRegion(): void
     {
         $this->container->get(FlashToastInterface::class)->warning('Careful.');
 
-        $html = (string) $this->container->get(ToastInterface::class);
+        $html = $this->container->get(ToastInterface::class)->render($this->view);
 
         self::assertStringContainsString('role="alert"', $html);
         self::assertStringContainsString('aria-live="assertive"', $html);
