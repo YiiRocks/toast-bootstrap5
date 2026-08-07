@@ -6,6 +6,7 @@ namespace YiiRocks\ToastBootstrap5;
 
 use Override;
 use Psr\Container\ContainerInterface;
+use YiiRocks\SvgInline\Bootstrap\SvgInlineBootstrapInterface;
 use YiiRocks\SvgInline\SvgInlineInterface;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\NoEncode;
@@ -99,16 +100,19 @@ final class Toast implements NoEncodeStringableInterface, ToastInterface
     private function icon(ToastType $type): NoEncodeStringableInterface
     {
         $name = $this->icons[$type->value] ?? null;
-        if ($name === null || $this->container === null || !$this->container->has(SvgInlineInterface::class)) {
+
+        // Icons are optional. Guard on SvgInlineBootstrapInterface, not the base SvgInlineInterface:
+        // since svg-inline 2.0 `$svg->bootstrap()` resolves the `bootstrap` icon set via __call() and
+        // throws if yiirocks/svg-inline-bootstrap isn't installed - and that interface is bound iff it is.
+        if ($name === null || $this->container === null || !$this->container->has(SvgInlineBootstrapInterface::class)) {
             return NoEncode::string('');
         }
 
         /** @var SvgInlineInterface $svg */
         $svg = $this->container->get(SvgInlineInterface::class);
 
-        // As of svg-inline 2.0 SvgInlineInterface extends NoEncodeStringableInterface, so the icon
-        // flows into content() unencoded as-is. Suppressed: bootstrap() is resolved via __call(),
-        // so psalm sees it as an undefined method returning mixed.
+        // SvgInlineInterface extends NoEncodeStringableInterface (2.0), so the icon flows into
+        // content() unencoded. Suppressed: bootstrap() via __call() reads as undefined→mixed to psalm.
         /** @psalm-suppress UndefinedMagicMethod, MixedReturnStatement */
         return $svg->bootstrap($name);
     }

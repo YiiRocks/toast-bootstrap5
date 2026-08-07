@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace YiiRocks\ToastBootstrap5\tests;
 
 use Psr\Container\ContainerInterface;
+use YiiRocks\SvgInline\Bootstrap\SvgInlineBootstrapInterface;
+use YiiRocks\SvgInline\SvgInlineInterface;
 use YiiRocks\ToastBootstrap5\FlashToastInterface;
 use YiiRocks\ToastBootstrap5\Toast;
 use YiiRocks\ToastBootstrap5\ToastInterface;
@@ -147,6 +149,24 @@ final class ToastTest extends TestCase
         $toast->setIcons([ToastType::Success->value => 'check-circle-fill']);
 
         self::assertStringNotContainsString('<svg', $toast->render());
+    }
+
+    public function testRendersWithoutAnIconWhenSvgInlineBootstrapIsNotInstalled(): void
+    {
+        // Base yiirocks/svg-inline is present, but the bootstrap icon set (yiirocks/svg-inline-bootstrap)
+        // is not - icon() must skip the icon rather than call ->bootstrap() and throw BadMethodCallException.
+        $container = $this->createStub(ContainerInterface::class);
+        $container->method('has')->willReturnCallback(
+            static fn(string $id): bool => $id === SvgInlineInterface::class,
+        );
+        $this->flash->add('toast.success', 'Saved.');
+        $toast = new Toast($this->flash, $container);
+        $toast->setIcons([ToastType::Success->value => 'check-circle-fill']);
+
+        $html = $toast->render();
+
+        self::assertStringNotContainsString('<svg', $html);
+        self::assertStringContainsString('Saved.', $html);
     }
 
     public function testRendersWithoutAnIconWhenNoContainerIsInjected(): void
