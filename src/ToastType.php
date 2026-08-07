@@ -29,7 +29,7 @@ enum ToastType: string
     public function closeButtonClass(): string
     {
         return match ($this) {
-            self::Success, self::Error => 'btn-close-white',
+            self::Success, self::Error => 'btn-close btn-close-white',
             self::Warning, self::Info => 'btn-close',
         };
     }

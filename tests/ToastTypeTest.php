@@ -26,10 +26,10 @@ final class ToastTypeTest extends TestCase
      */
     public static function closeButtonClassProvider(): iterable
     {
-        yield 'success is white' => [ToastType::Success, 'btn-close-white'];
-        yield 'error is white' => [ToastType::Error, 'btn-close-white'];
-        yield 'warning is default' => [ToastType::Warning, 'btn-close'];
-        yield 'info is default' => [ToastType::Info, 'btn-close'];
+        yield 'success is base + white' => [ToastType::Success, 'btn-close btn-close-white'];
+        yield 'error is base + white' => [ToastType::Error, 'btn-close btn-close-white'];
+        yield 'warning is base only' => [ToastType::Warning, 'btn-close'];
+        yield 'info is base only' => [ToastType::Info, 'btn-close'];
     }
 
     /**
