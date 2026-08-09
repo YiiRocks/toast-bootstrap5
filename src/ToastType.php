@@ -6,10 +6,10 @@ namespace YiiRocks\ToastBootstrap5;
 
 enum ToastType: string
 {
-    case Error = 'error';
-    case Info = 'info';
-    case Success = 'success';
-    case Warning = 'warning';
+    case ERROR = 'error';
+    case INFO = 'info';
+    case SUCCESS = 'success';
+    case WARNING = 'warning';
 
     /**
      * The Bootstrap 5 contextual color name backing this type's `text-bg-*` class.
@@ -17,7 +17,7 @@ enum ToastType: string
     public function bootstrapColor(): string
     {
         return match ($this) {
-            self::Error => 'danger',
+            self::ERROR => 'danger',
             default => $this->value,
         };
     }
@@ -29,8 +29,8 @@ enum ToastType: string
     public function closeButtonClass(): string
     {
         return match ($this) {
-            self::Success, self::Error => 'btn-close btn-close-white',
-            self::Warning, self::Info => 'btn-close',
+            self::SUCCESS, self::ERROR => 'btn-close btn-close-white',
+            self::WARNING, self::INFO => 'btn-close',
         };
     }
 
@@ -41,8 +41,8 @@ enum ToastType: string
     public function isUrgent(): bool
     {
         return match ($this) {
-            self::Error, self::Warning => true,
-            self::Success, self::Info => false,
+            self::ERROR, self::WARNING => true,
+            self::SUCCESS, self::INFO => false,
         };
     }
 }

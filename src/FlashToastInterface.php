@@ -11,12 +11,4 @@ namespace YiiRocks\ToastBootstrap5;
 interface FlashToastInterface
 {
     public function add(ToastType $type, string $message): void;
-
-    public function error(string $message): void;
-
-    public function info(string $message): void;
-
-    public function success(string $message): void;
-
-    public function warning(string $message): void;
 }

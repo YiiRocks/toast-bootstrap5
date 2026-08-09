@@ -19,18 +19,6 @@ final class FlashToast implements FlashToastInterface
         $this->flash->add(self::key($type), $message);
     }
 
-    #[Override]
-    public function error(string $message): void
-    {
-        $this->add(ToastType::Error, $message);
-    }
-
-    #[Override]
-    public function info(string $message): void
-    {
-        $this->add(ToastType::Info, $message);
-    }
-
     /**
      * The flash key a given {@see ToastType}'s messages are stored under. Shared with {@see Toast},
      * which reads messages back out under the same key.
@@ -38,17 +26,5 @@ final class FlashToast implements FlashToastInterface
     public static function key(ToastType $type): string
     {
         return 'toast.' . $type->value;
-    }
-
-    #[Override]
-    public function success(string $message): void
-    {
-        $this->add(ToastType::Success, $message);
-    }
-
-    #[Override]
-    public function warning(string $message): void
-    {
-        $this->add(ToastType::Warning, $message);
     }
 }

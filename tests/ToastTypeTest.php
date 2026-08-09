@@ -15,10 +15,10 @@ final class ToastTypeTest extends TestCase
      */
     public static function bootstrapColorProvider(): iterable
     {
-        yield 'success' => [ToastType::Success, 'success'];
-        yield 'error maps to danger' => [ToastType::Error, 'danger'];
-        yield 'warning' => [ToastType::Warning, 'warning'];
-        yield 'info' => [ToastType::Info, 'info'];
+        yield 'success' => [ToastType::SUCCESS, 'success'];
+        yield 'error maps to danger' => [ToastType::ERROR, 'danger'];
+        yield 'warning' => [ToastType::WARNING, 'warning'];
+        yield 'info' => [ToastType::INFO, 'info'];
     }
 
     /**
@@ -26,10 +26,10 @@ final class ToastTypeTest extends TestCase
      */
     public static function closeButtonClassProvider(): iterable
     {
-        yield 'success is base + white' => [ToastType::Success, 'btn-close btn-close-white'];
-        yield 'error is base + white' => [ToastType::Error, 'btn-close btn-close-white'];
-        yield 'warning is base only' => [ToastType::Warning, 'btn-close'];
-        yield 'info is base only' => [ToastType::Info, 'btn-close'];
+        yield 'success is base + white' => [ToastType::SUCCESS, 'btn-close btn-close-white'];
+        yield 'error is base + white' => [ToastType::ERROR, 'btn-close btn-close-white'];
+        yield 'warning is base only' => [ToastType::WARNING, 'btn-close'];
+        yield 'info is base only' => [ToastType::INFO, 'btn-close'];
     }
 
     /**
@@ -37,10 +37,10 @@ final class ToastTypeTest extends TestCase
      */
     public static function isUrgentProvider(): iterable
     {
-        yield 'success is not urgent' => [ToastType::Success, false];
-        yield 'error is urgent' => [ToastType::Error, true];
-        yield 'warning is urgent' => [ToastType::Warning, true];
-        yield 'info is not urgent' => [ToastType::Info, false];
+        yield 'success is not urgent' => [ToastType::SUCCESS, false];
+        yield 'error is urgent' => [ToastType::ERROR, true];
+        yield 'warning is urgent' => [ToastType::WARNING, true];
+        yield 'info is not urgent' => [ToastType::INFO, false];
     }
 
     #[DataProvider('bootstrapColorProvider')]

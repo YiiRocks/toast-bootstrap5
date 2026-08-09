@@ -48,6 +48,8 @@ final class Toast implements ToastInterface
             foreach ($this->messages($type) as $message) {
                 $toasts[] = $this->renderToast($type, $message);
             }
+
+            $this->flash->remove(FlashToast::key($type));
         }
 
         if ($toasts === []) {

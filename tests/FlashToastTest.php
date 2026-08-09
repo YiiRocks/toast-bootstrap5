@@ -14,41 +14,26 @@ final class FlashToastTest extends TestCase
     {
         $toast = $this->container->get(FlashToastInterface::class);
 
-        $toast->add(ToastType::Warning, 'First.');
-        $toast->add(ToastType::Warning, 'Second.');
+        $toast->add(ToastType::WARNING, 'First.');
+        $toast->add(ToastType::WARNING, 'Second.');
 
-        self::assertSame(['First.', 'Second.'], $this->flash->get(FlashToast::key(ToastType::Warning)));
+        self::assertSame(['First.', 'Second.'], $this->flash->get(FlashToast::key(ToastType::WARNING)));
     }
 
     public function testAddStoresUnderTypeKey(): void
     {
         $toast = $this->container->get(FlashToastInterface::class);
 
-        $toast->add(ToastType::Success, 'Saved.');
+        $toast->add(ToastType::SUCCESS, 'Saved.');
 
-        self::assertSame(['Saved.'], $this->flash->get(FlashToast::key(ToastType::Success)));
-    }
-
-    public function testConvenienceMethodsDelegateToMatchingType(): void
-    {
-        $toast = new FlashToast($this->flash);
-
-        $toast->success('S');
-        $toast->error('E');
-        $toast->warning('W');
-        $toast->info('I');
-
-        self::assertSame(['S'], $this->flash->get(FlashToast::key(ToastType::Success)));
-        self::assertSame(['E'], $this->flash->get(FlashToast::key(ToastType::Error)));
-        self::assertSame(['W'], $this->flash->get(FlashToast::key(ToastType::Warning)));
-        self::assertSame(['I'], $this->flash->get(FlashToast::key(ToastType::Info)));
+        self::assertSame(['Saved.'], $this->flash->get(FlashToast::key(ToastType::SUCCESS)));
     }
 
     public function testKeyIsNamespacedPerType(): void
     {
-        self::assertSame('toast.success', FlashToast::key(ToastType::Success));
-        self::assertSame('toast.error', FlashToast::key(ToastType::Error));
-        self::assertSame('toast.warning', FlashToast::key(ToastType::Warning));
-        self::assertSame('toast.info', FlashToast::key(ToastType::Info));
+        self::assertSame('toast.success', FlashToast::key(ToastType::SUCCESS));
+        self::assertSame('toast.error', FlashToast::key(ToastType::ERROR));
+        self::assertSame('toast.warning', FlashToast::key(ToastType::WARNING));
+        self::assertSame('toast.info', FlashToast::key(ToastType::INFO));
     }
 }
