@@ -215,7 +215,11 @@ final class ToastTest extends TestCase
         $toast->setIcons([]);
         $this->container->get(FlashToastInterface::class)->add(ToastType::SUCCESS, 'Saved.');
 
-        self::assertStringNotContainsString('<svg', $toast->render($this->view));
+        $html = $toast->render($this->view);
+
+        self::assertStringNotContainsString('<svg', $html);
+        // Icon wrapper div with flex classes should not be present when no icon is configured
+        self::assertStringNotContainsString('d-flex align-items-center justify-content-center flex-shrink-0', $html);
     }
 
     public function testUrgentTypeUsesAlertRoleAndAssertiveLiveRegion(): void

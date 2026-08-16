@@ -144,9 +144,17 @@ final class Toast implements ToastInterface
             $toast = $toast->attribute('data-bs-delay', (string) $delay);
         }
 
+        $icon = $this->icon($type);
+        $iconElement = (string) $icon !== ''
+            ? Html::div()
+                ->class('d-flex', 'align-items-center', 'justify-content-center', 'flex-shrink-0')
+                ->attribute('style', 'width: 1.5rem; height: 1.5rem;')
+                ->content($icon)
+            : NoEncode::string('');
+
         $body = Html::div()
             ->class('toast-body', 'd-flex', 'align-items-center', 'gap-2')
-            ->content($this->icon($type), $message);
+            ->content($iconElement, $message);
 
         $closeButton = Html::button('')
             ->class($type->closeButtonClass(), 'me-2', 'm-auto')
