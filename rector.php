@@ -12,7 +12,6 @@ return RectorConfig::configure()
         __DIR__ . '/src',
         __DIR__ . '/tests',
         __DIR__ . '/config',
-        __DIR__ . '/resources',
     ])
     ->withPhpSets(php83: true)
     ->withSets([
@@ -23,6 +22,5 @@ return RectorConfig::configure()
         RemoveOverrideAttributeRector::class => [
             __DIR__ . '/src',
             __DIR__ . '/config',
-            __DIR__ . '/resources',
         ],
     ]);
