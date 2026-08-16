@@ -12,7 +12,6 @@ use Yiisoft\Html\Html;
 use Yiisoft\Html\NoEncode;
 use Yiisoft\Html\NoEncodeStringableInterface;
 use Yiisoft\Html\Tag\Div;
-
 use Yiisoft\Session\Flash\FlashInterface;
 use Yiisoft\View\WebView;
 

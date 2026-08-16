@@ -40,8 +40,10 @@
         "httpsoft/http-message": "@stable",
         "infection/infection": "^0.34.0",
         "phpunit/phpunit": "@stable",
+        "rector/rector": "^2.1.1",
         "vimeo/psalm": "^6.0",
         "yiirocks/svg-inline-bootstrap": "^1.0",
+        "yiisoft/code-style": "^1.1",
         "yiisoft/config": "^1.6",
         "yiisoft/di": "*"
     },
@@ -68,13 +70,15 @@
         "php-cs-fixer": "@php vendor/bin/php-cs-fixer fix",
         "phpunit": "@php vendor/bin/phpunit",
         "psalm": "@php vendor/bin/psalm",
-        "infection": "@php vendor/bin/infection --configuration=infection.json --min-msi=100 --min-covered-msi=100"
+        "infection": "@php vendor/bin/infection",
+        "rector": "@php vendor/bin/rector process"
     },
     "scripts-descriptions": {
         "php-cs-fixer": "Cleans to code with PHP Coding Standards Fixer.",
         "phpunit": "PHPUnit - programmer-oriented testing framework.",
         "psalm": "Psalm - static analysis tool for finding errors in PHP applications.",
-        "infection": "Infection - PHP Mutation Testing Framework."
+        "infection": "Infection - PHP Mutation Testing Framework.",
+        "rector": "Rector - automated tool for refactoring and upgrading PHP code."
     },
     "extra": {
         "branch-alias": {
