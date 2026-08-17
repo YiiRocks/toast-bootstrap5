@@ -36,45 +36,6 @@ Optionally, add [Bootstrap Icons](https://icons.getbootstrap.com/) per message t
 composer require yiirocks/svg-inline-bootstrap
 ```
 
-## Usage
+## Documentation
 
-Queue a message from a controller or anywhere else `FlashToastInterface` is available:
-
-```php
-use YiiRocks\ToastBootstrap5\ToastType;
-
-public function __construct(private FlashToastInterface $toast) {}
-
-public function actionSave(): ResponseInterface
-{
-    // ...
-    $this->toast->add(ToastType::SUCCESS, 'Changes saved.');
-
-    return $this->redirect('...');
-}
-```
-
-Then render `$toast` once in your layout, passing the current view (`$this`) - the default
-configuration injects `$toast` into every view:
-
-```php
-<?= $toast->render($this) ?>
-```
-
-Nothing renders until a message is pending. Four `ToastType` cases are available (`Success`,
-`Error`, `Warning`, `Info`), each mapped to a Bootstrap 5 `text-bg-*` color, and multiple messages
-of the same type stack as separate toasts.
-
-Available options (auto-hide delay per type, icon per type, container position) can be found in
-the [documentation](https://www.yii.rocks/toast-bootstrap5/).
-
-## Unit testing
-
-The package is tested with [Psalm](https://psalm.dev/), [PHPUnit](https://phpunit.de/) and
-[Infection](https://infection.github.io/) mutation testing. To run tests:
-
-```bash
-composer psalm
-composer phpunit
-composer infection
-```
+The complete reference guide is available at [Yii.Rocks](https://www.yii.rocks/toast-bootstrap5/).
